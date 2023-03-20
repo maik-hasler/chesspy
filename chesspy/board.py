@@ -26,18 +26,18 @@ def create_chess_board():
                 pygame.draw.rect(board_surface, dark_brown, square_rect)
 
     # Load the chess piece images
-    black_pawn = pygame.image.load("../assets/Black-Pawn.png").convert_alpha()
-    black_rook = pygame.image.load("../assets/Black-Rook.png").convert_alpha()
-    black_knight = pygame.image.load("../assets/Black-Knight.png").convert_alpha()
-    black_bishop = pygame.image.load("../assets/Black-Bishop.png").convert_alpha()
-    black_queen = pygame.image.load("../assets/Black-Queen.png").convert_alpha()
-    black_king = pygame.image.load("../assets/Black-King.png").convert_alpha()
-    white_pawn = pygame.image.load("../assets/White-Pawn.png").convert_alpha()
-    white_rook = pygame.image.load("../assets/White-Rook.png").convert_alpha()
-    white_knight = pygame.image.load("../assets/White-Knight.png").convert_alpha()
-    white_bishop = pygame.image.load("../assets/White-Bishop.png").convert_alpha()
-    white_queen = pygame.image.load("../assets/White-Queen.png").convert_alpha()
-    white_king = pygame.image.load("../assets/White-King.png").convert_alpha()
+    black_pawn = pygame.image.load("assets/Black-Pawn.png").convert_alpha()
+    black_rook = pygame.image.load("assets/Black-Rook.png").convert_alpha()
+    black_knight = pygame.image.load("assets/Black-Knight.png").convert_alpha()
+    black_bishop = pygame.image.load("assets/Black-Bishop.png").convert_alpha()
+    black_queen = pygame.image.load("assets/Black-Queen.png").convert_alpha()
+    black_king = pygame.image.load("assets/Black-King.png").convert_alpha()
+    white_pawn = pygame.image.load("assets/White-Pawn.png").convert_alpha()
+    white_rook = pygame.image.load("assets/White-Rook.png").convert_alpha()
+    white_knight = pygame.image.load("assets/White-Knight.png").convert_alpha()
+    white_bishop = pygame.image.load("assets/White-Bishop.png").convert_alpha()
+    white_queen = pygame.image.load("assets/White-Queen.png").convert_alpha()
+    white_king = pygame.image.load("assets/White-King.png").convert_alpha()
 
     # Add the chess pieces to the board surface
     board_surface.blit(black_rook, black_rook.get_rect(center=pygame.Rect(0, 0, 80, 80).center))
@@ -79,6 +79,3 @@ def create_chess_board():
             if event.type == pygame.QUIT:
                 pygame.quit()
                 return
-
-if __name__ == '__main__':
-    create_chess_board()
