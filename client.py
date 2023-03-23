@@ -1,4 +1,6 @@
+import pickle
 import socket
+from chesspy.game import Game
 
 class Client:
 
@@ -6,6 +8,7 @@ class Client:
         self.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.socket.connect((host, port))
         self.game_over = False
+        self.game = Game()
 
     def send_move(self, move):
         self.socket.sendall(move.encode())
@@ -13,8 +16,14 @@ class Client:
     def receive_message(self):
         return self.socket.recv(1024).decode()
 
+    def receive_board(self):
+        board_bytes = self.socket.recv(1024)
+        return pickle.loads(board_bytes)
+
     def start_game(self):
         while not self.game_over:
+            board = self.receive_board()
+            self.game.update_board(board)
             message = self.receive_message()
             print(message)
             move = input("Enter your move: ")
