@@ -1,10 +1,20 @@
-import socket
 import pickle
+import select
+import socket
+
 from chesspy.board import Board
 
-class Server():
 
-    def __init__(self, host, port):
+class Server():
+    """Represents a server."""
+
+    def __init__(self, host: str, port: int) -> None:
+        """Initializes a new Server object.
+
+        Args:
+            host (str): The host of the server.
+            port (int): The port of the server.
+        """
         self.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.socket.bind((host, port))
         self.socket.listen(1)
@@ -24,7 +34,8 @@ class Server():
 
     def start_game(self):
         while not self.board.game_over:
-            for client in self.clients:
+            read_sockets, _, _ = select.select(self.clients, [], [], 0)
+            for client in read_sockets:
                 self.handle_client(client)
                 if self.board.is_game_over():
                     self.board.game_over = True

@@ -1,12 +1,16 @@
 import pickle
 import socket
 from chesspy.game import Game
+import time
+import pygame
+import sys
 
 class Client:
 
     def __init__(self, host, port):
         self.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.socket.connect((host, port))
+        self.socket.setblocking(False)
         self.game_over = False
         self.game = Game()
 
@@ -14,22 +18,39 @@ class Client:
         self.socket.sendall(move.encode())
 
     def receive_message(self):
-        return self.socket.recv(1024).decode()
+        while True:
+            try:
+                message = self.socket.recv(1024)
+                if not message:
+                    break
+                return message.decode()
+            except BlockingIOError:
+                # The socket is non-blocking and there is no data currently available.
+                # Wait for a short delay before retrying.
+                time.sleep(0.1)
+                continue
 
     def receive_board(self):
-        board_bytes = self.socket.recv(1024)
-        return pickle.loads(board_bytes)
+        while True:
+            try:
+                board_bytes = self.socket.recv(1024)
+                if not board_bytes:
+                    break
+                return pickle.loads(board_bytes)
+            except BlockingIOError:
+                # The socket is non-blocking and there is no data currently available.
+                # Wait for a short delay before retrying.
+                time.sleep(0.1)
+                continue
 
     def start_game(self):
         while not self.game_over:
-            board = self.receive_board()
-            self.game.update_board(board)
-            message = self.receive_message()
-            print(message)
-            move = input("Enter your move: ")
-            self.send_move(move)
-            if "Game over!" in message:
-                self.game_over = True
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    pygame.quit()
+                    sys.exit()
+
+            pygame.display.set_caption("Hello")
 
     def close(self):
         self.socket.close()
