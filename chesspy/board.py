@@ -7,6 +7,7 @@ class Board:
     def __init__(self):
         self.game_over = False
         self.board = self._init_board()
+        self.current_player_index = 0
 
     def _init_board(self):
         return [

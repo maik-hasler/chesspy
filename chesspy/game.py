@@ -5,19 +5,10 @@ from chesspy.piece import Color, PieceType
 
 class Game:
 
-    def __init__(self):
-        # Initialize Pygame
-        pygame.init()
-        # Define the colors for the chess board
+    def __init__(self, screen):
+        self.screen = screen
         self.light_brown = (245, 222, 179)
         self.dark_brown = (139, 69, 19)
-
-        # Set the size of the screen
-        self.screen_width = 640
-        self.screen_height = 640
-        self.screen = pygame.display.set_mode((self.screen_width, self.screen_height))
-
-        # Create the chess board surface
         self.board_surface = pygame.Surface((640, 640))
 
         # Draw the squares on the chess board
