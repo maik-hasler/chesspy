@@ -1,8 +1,9 @@
-from typing import Tuple
+from typing import List, Tuple
 
 import pygame
 
 from chesspy.board import Board
+from chesspy.models import Move
 from chesspy.pieces.bishop import Bishop
 from chesspy.pieces.color import Color
 from chesspy.pieces.king import King
@@ -14,11 +15,12 @@ from chesspy.pieces.rook import Rook
 
 class Game:
 
-    def __init__(self, screen):
+    def __init__(self, screen, board_surface):
         self.screen = screen
         self.light_brown = (245, 222, 179)
         self.dark_brown = (139, 69, 19)
-        self.board_surface = pygame.Surface((640, 640))
+        self.board_surface = board_surface
+        self.board_copy = None
 
         # Draw the squares on the chess board
         for row in range(8):
@@ -49,11 +51,11 @@ class Game:
         # Update the display
         pygame.display.update()
 
-    def update_board(self, board: Board):
+    def update_board(self, board):
         # Loop through the board
         for row in range(8):
             for column in range(8):
-                piece = board.board[row][column]
+                piece = board[row][column]
                 if piece is not None:
                     # Get the appropriate image for the piece
                     if piece.color == Color.WHITE:
@@ -96,24 +98,24 @@ class Game:
         # Update the display
         pygame.display.update()
 
-    def highlight_moves(self, board: Board, selected_square: Tuple[int, int]):
-        # Get the piece on the selected square
-        piece = board.get_piece(selected_square)
-
-        # Check if there is a piece on the square
-        if piece is not None:
-            # Get the valid moves for the piece
-            valid_moves = board.get_valid_moves(selected_square, piece)
-
-            # Highlight the valid moves
-            for move in valid_moves:
-                x, y = move.end_position
-                rect = pygame.Rect(y * 80, x * 80, 80, 80)
-                pygame.draw.rect(self.board_surface, (0, 255, 0, 100), rect)
-
-            # Blit the updated board surface onto the screen
-            self.screen.blit(self.board_surface, (0, 0))
-
-            # Update the display
-            pygame.display.update()
-            
+    def highlight_valid_moves(self, valid_moves: List[Move]) -> None:
+        if self.board_copy is not None:
+            self.board_surface.blit(self.board_copy, (0, 0))
+        self.board_copy = self.board_surface.copy()
+        for move in valid_moves:
+            row, col = move.end_position
+            rect = pygame.Rect(col * 80, row * 80, 80, 80)
+            pygame.draw.rect(self.board_surface, (0, 255, 0, 50), rect)
+        self.screen.blit(self.board_surface, (0, 0))
+        pygame.display.update()
+    
+    @staticmethod
+    def get_selected_square() -> Tuple[int, int]:
+        mouse_x, mouse_y = pygame.mouse.get_pos()
+        row = mouse_y // 80
+        column = mouse_x // 80
+        return (row, column)
+    
+    def reset_highlights(self):
+        if self.board_copy is not None:
+            self.board_surface.blit(self.board_copy, (0, 0))

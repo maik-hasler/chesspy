@@ -5,7 +5,7 @@ from select import select
 import pygame
 
 from chesspy.game import Game
-from chesspy.models import Move
+from chesspy.move import Move
 
 
 class Client:
@@ -15,8 +15,11 @@ class Client:
         """Initializes a new Client object."""
         pygame.init()
         self.screen = pygame.display.set_mode((640, 640))
-        self.game = Game(self.screen)
+        self.board_surface = pygame.Surface((640, 640))
+        self.game = Game(self.screen, self.board_surface)
         self.board = None
+        self.socket = None
+        self.player_index = None
 
     def connect(self, host: str, port: int) -> None:
         """Connect to a server.
@@ -28,14 +31,9 @@ class Client:
         self.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.socket.connect((host, port))
         self.socket.setblocking(False)
-
-        # Receive player index from the server using pickle
-        while True:
-            player_index_bytes = self.receive_data()
-            if player_index_bytes == None:
-                continue
-            self.player_index = pickle.loads(player_index_bytes)
-            break
+        while self.player_index == None:
+            if (player_index_bytes := self.receive_data()) != None:
+                self.player_index = pickle.loads(player_index_bytes)
 
     def start_game(self):
         while True:
@@ -43,46 +41,50 @@ class Client:
                 if event.type == pygame.QUIT:
                     pygame.quit()
                     return
+                
                 elif event.type == pygame.MOUSEBUTTONDOWN:
-                    mouse_x, mouse_y = pygame.mouse.get_pos()
-                    row = mouse_y // 80
-                    column = mouse_x // 80
-                    selected_square = (row, column)
-                    print(f"You selected {selected_square}")
-                    self.game.highlight_moves(self.board, selected_square)
-            
-            # Check if there is data to be read from the server
-            data = self.receive_data()
+                    # Check if its the players turn
+                    current_player_index = self.board.current_player_index
+                    if current_player_index == self.player_index:
+                        self.selected_square = Game.get_selected_square()
+                        piece = self.board.get_piece(self.selected_square)
+                        if piece is None:
+                            continue
+                        self.valid_moves = self.board.get_valid_moves(self.selected_square, piece)
+                        self.game.highlight_valid_moves(self.valid_moves)
 
+                elif event.type == pygame.MOUSEBUTTONUP:
+                    # Check if its the players turn
+                    current_player_index = self.board.current_player_index
+                    if current_player_index == self.player_index:
+                        end_square = Game.get_selected_square()
+                        if self.selected_square is not None and end_square != self.selected_square:
+                            move = Move(self.selected_square, end_square)
+                            if move in self.valid_moves:
+                                self.board = self.board.apply_move(move)
+                                self.send_data(self.board)
+                        self.game.update_board(self.board)
+                        self.game.reset_highlights()
+                        self.selected_square = None
+
+            data = self.receive_data()
             if data is None:
                 continue
-
-            # Deserialize the board object sent by the server
             self.board = pickle.loads(data)
-
-            # Update the game state here
-            self.game.update_board(self.board)
-
-            # Update the screen here
+            self.game.update_board(self.board.board)
             pygame.display.update()
 
-            # Display a message indicating whose turn it is
-            current_player_index = self.board.current_player_index
-            if current_player_index == self.player_index:
-                message = "Your turn"
-            else:
-                message = "Opponent's turn"
-            font = pygame.font.Font(None, 36) # create a font object
-            text_surface = font.render(message, True, (255, 255, 255)) # create a surface with text
-            self.screen.blit(text_surface, (100, 100)) # blit the surface onto the screen
-
     def receive_data(self):
-        ready_to_read, _, _ = select([self.socket], [], [], 0)
-        for server in ready_to_read:
+        sockets, _, _ = select([self.socket], [], [], 0)
+        for server in sockets:
             data = server.recv(1024)
             if not data:
                 return None
             return data
+        
+    def send_data(self, data):
+        serialized_data = pickle.dumps(data)
+        self.socket.send(serialized_data)
 
     def disconnect(self):
         """Disconnect from a server."""

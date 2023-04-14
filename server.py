@@ -43,13 +43,13 @@ class Server():
             self._broadcast_board()
 
     def handle_client(self, client):
-        move = client.recv(1024)
-
-        # Update the board with the move
-        # ...
-
-        # Send the updated board to the clients
-        self._broadcast_board()
+        while True:
+            board_bytes = client.recv(1024)
+            if board_bytes is None:
+                continue
+            self.board.board = pickle.loads(board_bytes)
+            self._broadcast_board()
+            break
 
 if __name__ == '__main__':
     server = Server('127.0.0.1', 8000)

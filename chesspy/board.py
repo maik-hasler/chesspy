@@ -103,3 +103,11 @@ class Board:
         """
         row, col = position
         return self.board[row][col]
+    
+    def apply_move(self, move: Move):
+        start_pos = move.start_position
+        end_pos = move.end_position
+        piece = self.board[start_pos[0]][start_pos[1]]
+        self.board[start_pos[0]][start_pos[1]] = None
+        self.board[end_pos[0]][end_pos[1]] = piece
+        return self.board

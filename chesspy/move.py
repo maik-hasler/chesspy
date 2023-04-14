@@ -68,3 +68,8 @@ class Move:
         start_row, start_col = start_position
         end_row, end_col = end_position
         return abs(start_row - end_row) == abs(start_col - end_col)
+    
+    def __eq__(self, other):
+        if not isinstance(other, Move):
+            return NotImplemented
+        return self.start_position == other.start_position and self.end_position == other.end_position
