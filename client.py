@@ -5,6 +5,7 @@ from select import select
 import pygame
 
 from chesspy.game import Game
+from chesspy.models import Move
 
 
 class Client:
@@ -28,8 +29,12 @@ class Client:
         self.socket.setblocking(False)
 
         # Receive player index from the server using pickle
-        player_index_bytes = self.receive_data()
-        self.player_index = pickle.loads(player_index_bytes)
+        while True:
+            player_index_bytes = self.receive_data()
+            if player_index_bytes == None:
+                continue
+            self.player_index = pickle.loads(player_index_bytes)
+            break
 
     def start_game(self):
         while True:
@@ -71,7 +76,7 @@ class Client:
         for server in ready_to_read:
             data = server.recv(1024)
             if not data:
-                raise Exception()
+                return None
             return data
 
     def disconnect(self):

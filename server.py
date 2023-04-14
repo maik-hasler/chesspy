@@ -23,11 +23,8 @@ class Server():
     def accept_clients(self):
         while len(self.clients) < 2:
             client, _ = self.socket.accept()
-
-            # Send player index to the client using pickle
             player_index_bytes = pickle.dumps(len(self.clients))
             client.sendall(player_index_bytes)
-
             self.clients.append(client)
 
     def _broadcast_board(self):
@@ -46,9 +43,7 @@ class Server():
             self._broadcast_board()
 
     def handle_client(self, client):
-        client.sendall(b"Your turn. Please enter your move:")
         move = client.recv(1024)
-        print(f"Received move from client: {move}")
 
         # Update the board with the move
         # ...
