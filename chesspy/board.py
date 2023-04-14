@@ -1,6 +1,13 @@
 from typing import List, Optional, Tuple
+from chesspy.pieces.king import King
+from chesspy.pieces.queen import Queen
+from chesspy.pieces.rook import Rook
+from chesspy.pieces.bishop import Bishop
+from chesspy.pieces.knight import Knight
+from chesspy.pieces.pawn import Pawn
+from chesspy.pieces.piece import Piece
 from chesspy.move import Move
-from chesspy.piece import Bishop, Color, King, Knight, Pawn, Piece, Queen, Rook
+from chesspy.pieces.color import Color
 
 
 class Board:

@@ -1,8 +1,16 @@
 from typing import Tuple
+
 import pygame
 
 from chesspy.board import Board
-from chesspy.piece import Bishop, Color, King, Knight, Pawn, Queen, Rook
+from chesspy.pieces.bishop import Bishop
+from chesspy.pieces.color import Color
+from chesspy.pieces.king import King
+from chesspy.pieces.knight import Knight
+from chesspy.pieces.pawn import Pawn
+from chesspy.pieces.queen import Queen
+from chesspy.pieces.rook import Rook
+
 
 class Game:
 

@@ -1,5 +1,6 @@
 import unittest
-from chesspy.piece import Pawn, Color
+from chesspy.pieces.pawn import Pawn
+from chesspy.pieces.color import Color
 from chesspy.move import Move
 from chesspy.board import Board
 
