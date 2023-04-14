@@ -26,47 +26,22 @@ class Queen(Piece):
 
         # Check if the move is diagonal
         if abs(end_row - start_row) == abs(end_col - start_col):
-            # Check if there are pieces in the way of the diagonal move
-            if end_row > start_row and end_col > start_col:
-                for i in range(1, end_row - start_row):
-                    if board[start_row+i][start_col+i] is not None:
-                        return False
-            elif end_row > start_row and end_col < start_col:
-                for i in range(1, end_row - start_row):
-                    if board[start_row+i][start_col-i] is not None:
-                        return False
-            elif end_row < start_row and end_col > start_col:
-                for i in range(1, start_row - end_row):
-                    if board[start_row-i][start_col+i] is not None:
-                        return False
-            else:
-                for i in range(1, start_row - end_row):
-                    if board[start_row-i][start_col-i] is not None:
-                        return False
+            # Check if the diagonal is blocked
+            if Piece.is_diagonal_line_blocked(move, board):
+                return False
             return True
 
         # Check if the move is horizontal or vertical
         if start_row == end_row:
-            # Check if there are pieces in the way of the horizontal move
-            if end_col > start_col:
-                for i in range(start_col+1, end_col):
-                    if board[start_row][i] is not None:
-                        return False
-            else:
-                for i in range(end_col+1, start_col):
-                    if board[start_row][i] is not None:
-                        return False
+            # Check if the horizontal line is blocked
+            if Piece.is_horizontal_line_blocked(move, board):
+                return False
             return True
+        
         elif start_col == end_col:
-            # Check if there are pieces in the way of the vertical move
-            if end_row > start_row:
-                for i in range(start_row+1, end_row):
-                    if board[i][start_col] is not None:
-                        return False
-            else:
-                for i in range(end_row+1, start_row):
-                    if board[i][start_col] is not None:
-                        return False
+            # Check if the vertical line is blocked
+            if Piece.is_vertical_line_blocked(move, board):
+                return False
             return True
 
         return False

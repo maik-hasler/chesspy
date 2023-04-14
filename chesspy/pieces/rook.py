@@ -21,28 +21,18 @@ class Rook(Piece):
         Returns:
             bool: True if the move is valid, False otherwise.
         """
-        # Check if the move is a valid rook move
-        start_row, start_col = move.start_position
-        end_row, end_col = move.end_position
-        if start_row != end_row and start_col != end_col:
+        if Move.is_same_square(move.start_position, move.end_position):
             return False
 
-        # Check if there are any pieces in the way of the move
-        if start_row == end_row:
-            # Horizontal move
-            start_col, end_col = sorted([start_col, end_col])
-            for col in range(start_col+1, end_col):
-                if board[start_row][col] is not None:
-                    return False
-        else:
-            # Vertical move
-            start_row, end_row = sorted([start_row, end_row])
-            for row in range(start_row+1, end_row):
-                if board[row][start_col] is not None:
-                    return False
+        if not Move.is_same_row(move.start_position, move.end_position) and not Move.is_same_column(move.start_position, move.end_position):
+            return False
 
-        # Check if the rook can capture a piece on the end position
-        if board[end_row][end_col] is not None and board[end_row][end_col].color != self.color:
-            return True
+        if move.start_position[0] == move.end_position[0]:
+            if Piece.is_horizontal_line_blocked(move, board):
+                return False
+            
+        if move.start_position[1] == move.end_position[1]:
+            if Piece.is_vertical_line_blocked(move, board):
+                return False
 
         return True
