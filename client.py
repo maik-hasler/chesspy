@@ -16,6 +16,7 @@ class Client:
         pygame.init()
         self.screen = pygame.display.set_mode((640, 640))
         self.game = Game(self.screen)
+        self.board = None
 
     def connect(self, host: str, port: int) -> None:
         """Connect to a server.
@@ -42,6 +43,13 @@ class Client:
                 if event.type == pygame.QUIT:
                     pygame.quit()
                     return
+                elif event.type == pygame.MOUSEBUTTONDOWN:
+                    mouse_x, mouse_y = pygame.mouse.get_pos()
+                    row = mouse_y // 80
+                    column = mouse_x // 80
+                    selected_square = (row, column)
+                    print(f"You selected {selected_square}")
+                    self.game.highlight_moves(self.board, selected_square)
             
             # Check if there is data to be read from the server
             data = self.receive_data()
@@ -50,16 +58,16 @@ class Client:
                 continue
 
             # Deserialize the board object sent by the server
-            board = pickle.loads(data)
+            self.board = pickle.loads(data)
 
             # Update the game state here
-            self.game.update_board(board)
+            self.game.update_board(self.board)
 
             # Update the screen here
             pygame.display.update()
 
             # Display a message indicating whose turn it is
-            current_player_index = self.get_current_player_index(board)
+            current_player_index = self.board.current_player_index
             if current_player_index == self.player_index:
                 message = "Your turn"
             else:
@@ -67,9 +75,6 @@ class Client:
             font = pygame.font.Font(None, 36) # create a font object
             text_surface = font.render(message, True, (255, 255, 255)) # create a surface with text
             self.screen.blit(text_surface, (100, 100)) # blit the surface onto the screen
-
-    def get_current_player_index(self, board):
-        return board.current_player_index
 
     def receive_data(self):
         ready_to_read, _, _ = select([self.socket], [], [], 0)

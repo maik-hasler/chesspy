@@ -1,5 +1,7 @@
-from chesspy.piece import Piece, PieceType, Color
+from typing import List, Optional, Tuple
 from chesspy.move import Move
+from chesspy.piece import Bishop, Color, King, Knight, Pawn, Piece, Queen, Rook
+
 
 class Board:
     """Represents a chess board."""
@@ -10,20 +12,40 @@ class Board:
         self.current_player_index = 0
 
     def _init_board(self):
-        return [
-            [Piece(PieceType.ROOK, Color.WHITE), Piece(PieceType.KNIGHT, Color.WHITE), Piece(PieceType.BISHOP, Color.WHITE),
-             Piece(PieceType.QUEEN, Color.WHITE), Piece(PieceType.KING, Color.WHITE), Piece(PieceType.BISHOP, Color.WHITE),
-             Piece(PieceType.KNIGHT, Color.WHITE), Piece(PieceType.ROOK, Color.WHITE)],
-            [Piece(PieceType.PAWN, Color.WHITE) for _ in range(8)],
-            [None for _ in range(8)],
-            [None for _ in range(8)],
-            [None for _ in range(8)],
-            [None for _ in range(8)],
-            [Piece(PieceType.PAWN, Color.BLACK) for _ in range(8)],
-            [Piece(PieceType.ROOK, Color.BLACK), Piece(PieceType.KNIGHT, Color.BLACK), Piece(PieceType.BISHOP, Color.BLACK),
-             Piece(PieceType.QUEEN, Color.BLACK), Piece(PieceType.KING, Color.BLACK), Piece(PieceType.BISHOP, Color.BLACK),
-             Piece(PieceType.KNIGHT, Color.BLACK), Piece(PieceType.ROOK, Color.BLACK)]
-        ]
+        board = []
+        for row in range(8):
+            board_row = []
+            for col in range(8):
+                piece = None
+                if row == 0:
+                    if col == 0 or col == 7:
+                        piece = Rook(Color.WHITE)
+                    elif col == 1 or col == 6:
+                        piece = Knight(Color.WHITE)
+                    elif col == 2 or col == 5:
+                        piece = Bishop(Color.WHITE)
+                    elif col == 3:
+                        piece = Queen(Color.WHITE)
+                    elif col == 4:
+                        piece = King(Color.WHITE)
+                elif row == 1:
+                    piece = Pawn(Color.WHITE)
+                elif row == 6:
+                    piece = Pawn(Color.BLACK)
+                elif row == 7:
+                    if col == 0 or col == 7:
+                        piece = Rook(Color.BLACK)
+                    elif col == 1 or col == 6:
+                        piece = Knight(Color.BLACK)
+                    elif col == 2 or col == 5:
+                        piece = Bishop(Color.BLACK)
+                    elif col == 3:
+                        piece = Queen(Color.BLACK)
+                    elif col == 4:
+                        piece = King(Color.BLACK)
+                board_row.append(piece)
+            board.append(board_row)
+        return board
 
     def apply_move(self, move: Move):
         start_pos = move.start_position
@@ -42,3 +64,35 @@ class Board:
 
     def is_game_over(self):
         return False
+    
+    def get_valid_moves(self, position: Tuple[int, int], piece: Piece) -> List[Move]:
+        """Returns a list of valid moves for a piece on the board.
+
+        Args:
+            position (Tuple[int, int]): The position of the piece on the board as a tuple of two integers representing
+                the row and column index of the square.
+            piece (Piece): The piece to get valid moves for.
+
+        Returns:
+            List[Move]: A list of valid moves for the piece.
+        """
+        valid_moves = []
+        for row in range(8):
+            for col in range(8):
+                move = Move(position, (row, col))
+                if piece.is_valid_move(move, self.board):
+                    valid_moves.append(move)
+        return valid_moves
+
+    def get_piece(self, position: Tuple[int, int]) -> Optional[Piece]:
+        """Returns the piece at the specified position on the board.
+
+        Args:
+            position (Tuple[int, int]): The position on the board as a tuple of two integers representing
+                the row and column index of the square.
+
+        Returns:
+            Optional[Piece]: The piece at the specified position or None if there is no piece at the position.
+        """
+        row, col = position
+        return self.board[row][col]

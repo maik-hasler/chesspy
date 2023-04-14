@@ -1,7 +1,8 @@
+from typing import Tuple
 import pygame
 
 from chesspy.board import Board
-from chesspy.piece import Color, PieceType
+from chesspy.piece import Bishop, Color, King, Knight, Pawn, Queen, Rook
 
 class Game:
 
@@ -48,30 +49,30 @@ class Game:
                 if piece is not None:
                     # Get the appropriate image for the piece
                     if piece.color == Color.WHITE:
-                        if piece.piece_type == PieceType.PAWN:
+                        if isinstance(piece, Pawn):
                             image = self.white_pawn
-                        elif piece.piece_type == PieceType.ROOK:
+                        elif isinstance(piece, Rook):
                             image = self.white_rook
-                        elif piece.piece_type == PieceType.KNIGHT:
+                        elif isinstance(piece, Knight):
                             image = self.white_knight
-                        elif piece.piece_type == PieceType.BISHOP:
+                        elif isinstance(piece, Bishop):
                             image = self.white_bishop
-                        elif piece.piece_type == PieceType.QUEEN:
+                        elif isinstance(piece, Queen):
                             image = self.white_queen
-                        elif piece.piece_type == PieceType.KING:
+                        elif isinstance(piece, King):
                             image = self.white_king
                     else:
-                        if piece.piece_type == PieceType.PAWN:
+                        if isinstance(piece, Pawn):
                             image = self.black_pawn
-                        elif piece.piece_type == PieceType.ROOK:
+                        elif isinstance(piece, Rook):
                             image = self.black_rook
-                        elif piece.piece_type == PieceType.KNIGHT:
+                        elif isinstance(piece, Knight):
                             image = self.black_knight
-                        elif piece.piece_type == PieceType.BISHOP:
+                        elif isinstance(piece, Bishop):
                             image = self.black_bishop
-                        elif piece.piece_type == PieceType.QUEEN:
+                        elif isinstance(piece, Queen):
                             image = self.black_queen
-                        elif piece.piece_type == PieceType.KING:
+                        elif isinstance(piece, King):
                             image = self.black_king
 
                     # Calculate the position to blit the image
@@ -86,3 +87,25 @@ class Game:
 
         # Update the display
         pygame.display.update()
+
+    def highlight_moves(self, board: Board, selected_square: Tuple[int, int]):
+        # Get the piece on the selected square
+        piece = board.get_piece(selected_square)
+
+        # Check if there is a piece on the square
+        if piece is not None:
+            # Get the valid moves for the piece
+            valid_moves = board.get_valid_moves(selected_square, piece)
+
+            # Highlight the valid moves
+            for move in valid_moves:
+                x, y = move.end_position
+                rect = pygame.Rect(y * 80, x * 80, 80, 80)
+                pygame.draw.rect(self.board_surface, (0, 255, 0, 100), rect)
+
+            # Blit the updated board surface onto the screen
+            self.screen.blit(self.board_surface, (0, 0))
+
+            # Update the display
+            pygame.display.update()
+            
