@@ -1,73 +1,31 @@
 from typing import List, Optional, Tuple
-from chesspy.pieces.king import King
-from chesspy.pieces.queen import Queen
-from chesspy.pieces.rook import Rook
+
+from chesspy.move import Move
 from chesspy.pieces.bishop import Bishop
+from chesspy.pieces.color import Color
+from chesspy.pieces.king import King
 from chesspy.pieces.knight import Knight
 from chesspy.pieces.pawn import Pawn
 from chesspy.pieces.piece import Piece
-from chesspy.move import Move
-from chesspy.pieces.color import Color
+from chesspy.pieces.queen import Queen
+from chesspy.pieces.rook import Rook
 
 
 class Board:
     """Represents a chess board."""
 
-    def __init__(self):
-        self.game_over = False
-        self.board = self._init_board()
+    def __init__(self) -> None:
+        """Initializes a new board object."""
+        self.board = Board.create_board()
         self.current_player_index = 0
+        self.game_over = False
 
-    def _init_board(self) -> List[List[Piece]]:
-        board = []
-        for row in range(8):
-            board_row = []
-            for col in range(8):
-                piece = None
-                if row == 0:
-                    if col == 0 or col == 7:
-                        piece = Rook(Color.WHITE)
-                    elif col == 1 or col == 6:
-                        piece = Knight(Color.WHITE)
-                    elif col == 2 or col == 5:
-                        piece = Bishop(Color.WHITE)
-                    elif col == 3:
-                        piece = Queen(Color.WHITE)
-                    elif col == 4:
-                        piece = King(Color.WHITE)
-                elif row == 1:
-                    piece = Pawn(Color.WHITE)
-                elif row == 6:
-                    piece = Pawn(Color.BLACK)
-                elif row == 7:
-                    if col == 0 or col == 7:
-                        piece = Rook(Color.BLACK)
-                    elif col == 1 or col == 6:
-                        piece = Knight(Color.BLACK)
-                    elif col == 2 or col == 5:
-                        piece = Bishop(Color.BLACK)
-                    elif col == 3:
-                        piece = Queen(Color.BLACK)
-                    elif col == 4:
-                        piece = King(Color.BLACK)
-                board_row.append(piece)
-            board.append(board_row)
-        return board
-
-    def is_game_over(self):
+    def is_game_over(self) -> bool:
+        """Checks whether the game is over."""
         return False
 
     def get_valid_moves(self, position: Tuple[int, int], piece: Piece) -> List[Move]:
-        """Returns a list of valid moves for a piece on the board.
-
-        Args:
-            position (Tuple[int, int]): The position of the piece on the board as a tuple of two integers representing
-                the row and column index of the square.
-            piece (Piece): The piece to get valid moves for.
-
-        Returns:
-            List[Move]: A list of valid moves for the piece.
-        """
+        """Returns a list of valid moves for a piece on the board."""
         valid_moves = []
         for row in range(8):
             for col in range(8):
@@ -77,19 +35,12 @@ class Board:
         return valid_moves
 
     def get_piece(self, position: Tuple[int, int]) -> Optional[Piece]:
-        """Returns the piece at the specified position on the board.
-
-        Args:
-            position (Tuple[int, int]): The position on the board as a tuple of two integers representing
-                the row and column index of the square.
-
-        Returns:
-            Optional[Piece]: The piece at the specified position or None if there is no piece at the position.
-        """
+        """Returns the piece at the specified position on the board."""
         row, col = position
         return self.board[row][col]
 
-    def apply_move(self, move: Move):
+    def apply_move(self, move: Move) -> List[List[Piece]]:
+        """Applies a move to the chess board."""
         start_pos = move.start_position
         end_pos = move.end_position
         piece = self.get_piece(move.start_position)
@@ -98,3 +49,29 @@ class Board:
         self.board[start_pos[0]][start_pos[1]] = None
         self.board[end_pos[0]][end_pos[1]] = piece
         return self.board
+
+    @staticmethod
+    def create_board() -> List[List[Piece]]:
+        """Creates a board with pieces placed in their initial positions."""
+        board = [[None] * 8 for _ in range(8)]
+        board[0][0] = Rook(Color.WHITE)
+        board[0][1] = Knight(Color.WHITE)
+        board[0][2] = Bishop(Color.WHITE)
+        board[0][3] = Queen(Color.WHITE)
+        board[0][4] = King(Color.WHITE)
+        board[0][5] = Bishop(Color.WHITE)
+        board[0][6] = Knight(Color.WHITE)
+        board[0][7] = Rook(Color.WHITE)
+        for col in range(8):
+            board[1][col] = Pawn(Color.WHITE)
+        board[7][0] = Rook(Color.BLACK)
+        board[7][1] = Knight(Color.BLACK)
+        board[7][2] = Bishop(Color.BLACK)
+        board[7][3] = Queen(Color.BLACK)
+        board[7][4] = King(Color.BLACK)
+        board[7][5] = Bishop(Color.BLACK)
+        board[7][6] = Knight(Color.BLACK)
+        board[7][7] = Rook(Color.BLACK)
+        for col in range(8):
+            board[6][col] = Pawn(Color.BLACK)
+        return board
