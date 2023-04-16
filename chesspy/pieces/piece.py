@@ -36,6 +36,9 @@ class Piece(ABC):
             if board[start_row][col] is not None:
                 return True  # There is a piece on the horizontal line
 
+        if Piece.is_capture(move, board):
+            return False
+
         # Check the end square, but only if it is not empty
         if board[start_row][end_col] is not None:
             return True
@@ -65,6 +68,9 @@ class Piece(ABC):
             for row in range(end_row + 1, start_row):
                 if board[row][col] is not None:
                     return True
+
+        if Piece.is_capture(move, board):
+            return False
 
         # Check the end square, but only if it is not empty
         if board[end_row][col] is not None:
@@ -99,8 +105,22 @@ class Piece(ABC):
             row += step_row
             col += step_col
 
+        if Piece.is_capture(move, board):
+            return False
+
         # Check if the end position is blocked
         if board[end_row][end_col] is not None:
             return True
 
         return False  # The diagonal line is not blocked
+
+    @staticmethod
+    def is_capture(move: Move, board) -> bool:
+        """Checks whether the move is a capture move."""
+        start_row, start_col = move.start_position
+        end_row, end_col = move.end_position
+        piece = board[start_row][start_col]
+        end_piece = board[end_row][end_col]
+        if end_piece is None:
+            return False
+        return end_piece.color != piece.color
