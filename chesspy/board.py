@@ -56,7 +56,7 @@ class Board:
 
     def is_game_over(self):
         return False
-    
+
     def get_valid_moves(self, position: Tuple[int, int], piece: Piece) -> List[Move]:
         """Returns a list of valid moves for a piece on the board.
 
@@ -88,7 +88,7 @@ class Board:
         """
         row, col = position
         return self.board[row][col]
-    
+
     def apply_move(self, move: Move):
         start_pos = move.start_position
         end_pos = move.end_position

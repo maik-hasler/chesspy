@@ -30,7 +30,7 @@ class Rook(Piece):
         if move.start_position[0] == move.end_position[0]:
             if Piece.is_horizontal_line_blocked(move, board):
                 return False
-            
+
         if move.start_position[1] == move.end_position[1]:
             if Piece.is_vertical_line_blocked(move, board):
                 return False

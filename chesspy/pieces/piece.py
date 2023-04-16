@@ -41,7 +41,7 @@ class Piece(ABC):
             return True
 
         return False  # The horizontal line is not blocked
-    
+
     @staticmethod
     def is_vertical_line_blocked(move: Move, board) -> bool:
         """Checks if the vertical line between the start and end positions of a move is blocked by other pieces.
@@ -71,7 +71,7 @@ class Piece(ABC):
             return True
 
         return False
-    
+
     @staticmethod
     def is_diagonal_line_blocked(move: Move, board) -> bool:
         """Checks if the diagonal line between the start and end positions of a move is blocked by other pieces.

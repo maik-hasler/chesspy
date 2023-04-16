@@ -52,7 +52,7 @@ class Server():
                 raise ConnectionError("Connection to client lost.")
             move = pickle.loads(move_bytes)
         return move
-    
+
 if __name__ == '__main__':
     server = Server('127.0.0.1', 8000)
     server.accept_clients()

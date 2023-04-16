@@ -27,7 +27,7 @@ class Move:
             bool: True if the start and end positions are in the same row, False otherwise.
         """
         return start_position[0] == end_position[0]
-    
+
     @staticmethod
     def is_same_column(start_position: Tuple[int, int], end_position: Tuple[int, int]) -> bool:
         """Checks if the start and end positions are in the same column.
@@ -40,7 +40,7 @@ class Move:
             bool: True if the start and end positions are in the same column, False otherwise.
         """
         return start_position[1] == end_position[1]
-    
+
     @staticmethod
     def is_same_square(start_position: Tuple[int, int], end_position: Tuple[int, int]) -> bool:
         """Checks whether the start and end positions represent the same square.
@@ -53,7 +53,7 @@ class Move:
             bool: True if the start and end positions are the same, False otherwise.
         """
         return start_position == end_position
-    
+
     @staticmethod
     def is_diagonal_move(start_position: Tuple[int, int], end_position: Tuple[int, int]) -> bool:
         """Checks whether a move is diagonal.
@@ -68,7 +68,7 @@ class Move:
         start_row, start_col = start_position
         end_row, end_col = end_position
         return abs(start_row - end_row) == abs(start_col - end_col)
-    
+
     def __eq__(self, other):
         if not isinstance(other, Move):
             return NotImplemented

@@ -37,7 +37,7 @@ class Queen(Piece):
             if Piece.is_horizontal_line_blocked(move, board):
                 return False
             return True
-        
+
         elif start_col == end_col:
             # Check if the vertical line is blocked
             if Piece.is_vertical_line_blocked(move, board):

@@ -37,7 +37,7 @@ class Game:
             rect = pygame.Rect(col * 80, row * 80, 80, 80)
             pygame.draw.rect(self.board_surface, (0, 255, 0, 50), rect)
         self.update_display()
-    
+
     def reset_highlights(self):
         if self.board_copy is not None:
             self.board_surface.blit(self.board_copy, (0, 0))

@@ -70,7 +70,7 @@ class Client:
             if not data:
                 return None
             return data
-        
+
     def send_move(self, move: Move):
         """Sends a move to the connected server."""
         move_bytes = pickle.dumps(move)
