@@ -6,6 +6,7 @@ import pygame
 
 from chesspy.game import Game
 from chesspy.move import Move
+from chesspy.pieces.color import Color
 
 
 class Client:
@@ -40,7 +41,7 @@ class Client:
                     if current_player_index == self.player_index:
                         self.selected_square = Game.get_selected_square()
                         piece = self.board.get_piece(self.selected_square)
-                        if piece is None:
+                        if piece is None or piece.color != Color(self.player_index):
                             continue
                         self.valid_moves = self.board.get_valid_moves(self.selected_square, piece)
                         self.game.highlight_valid_moves(self.valid_moves)
