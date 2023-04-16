@@ -1,46 +1,67 @@
 from chesspy.move import Move
 from chesspy.pieces.color import Color
 from chesspy.pieces.piece import Piece
+from chesspy.utils import is_player_in_check_after_move
 
 
 class Pawn(Piece):
     """Represents a pawn piece."""
 
     def __init__(self, color: Color) -> None:
-        """Initializes a new Pawn object.
-        Args:
-            color (Color): The color of the Pawn.
-        """
+        """Initializes a new pawn object."""
+        self.color = color
+        self.has_moved = False
+
+class Pawn(Piece):
+    """Represents a pawn piece."""
+
+    def __init__(self, color: Color) -> None:
+        """Initializes a new pawn object."""
         self.color = color
         self.has_moved = False
 
     def is_valid_move(self, move: Move, board) -> bool:
-        """Determines whether a given move is valid for a pawn on the chess board.
-        Args:
-            move (Move): The move to be checked.
-            board (Board): The current state of the chess board.
-        Returns:
-            bool: True if the move is valid, False otherwise.
-        """
-        start_pos = move.start_position
-        end_pos = move.end_position
+        """Determines whether a given move is valid for a pawn on the chess board."""
+        start_pos, end_pos = move.start_position, move.end_position
         dest_piece = board[end_pos[0]][end_pos[1]]
 
-        # Check if destination square is occupied by same color piece
-        if dest_piece is not None and dest_piece.color == self.color:
+        if dest_piece and dest_piece.color == self.color:
             return False
 
-        # Determine direction of pawn movement based on its color
-        direction = 1 if self.color == Color.WHITE else -1
+        direction = self._get_direction()
 
-        # Check if pawn is moving one or two squares forward on its first move
-        if start_pos[0] + direction == end_pos[0] and start_pos[1] == end_pos[1] and dest_piece is None:
-            return True
-        elif start_pos[0] + 2*direction == end_pos[0] and start_pos[1] == end_pos[1] and not self.has_moved and board[start_pos[0] + direction][start_pos[1]] is None and dest_piece is None:
+        if self._is_moving_one_square_forward(start_pos, end_pos, direction, dest_piece):
             return True
 
-        # Check if pawn is capturing a piece diagonally
-        if start_pos[0] + direction == end_pos[0] and abs(start_pos[1] - end_pos[1]) == 1 and dest_piece is not None and dest_piece.color != self.color:
+        if self._is_moving_two_squares_forward(start_pos, end_pos, direction, dest_piece, board):
+            return True
+
+        if self._is_valid_capture_move(start_pos, end_pos, direction, dest_piece):
             return True
 
         return False
+
+    def _is_moving_one_square_forward(self, start_pos, end_pos, direction, dest_piece) -> bool:
+        """Checks if the pawn is moving one square forward."""
+        if start_pos[0] + direction == end_pos[0] and start_pos[1] == end_pos[1] and not dest_piece:
+            return True
+        else:
+            return False
+
+    def _is_moving_two_squares_forward(self, start_pos, end_pos, direction, dest_piece, board) -> bool:
+        """Checks if the pawn is moving two squares forward on its first move."""
+        if start_pos[0] + 2 * direction == end_pos[0] and start_pos[1] == end_pos[1] and not self.has_moved and not dest_piece and not board[start_pos[0] + direction][start_pos[1]]:
+            return True
+        else:
+            return False
+
+    def _is_valid_capture_move(self, start_pos, end_pos, direction, dest_piece) -> bool:
+        """Checks if the pawn is making a valid capture move."""
+        if abs(start_pos[1] - end_pos[1]) == 1 and start_pos[0] + direction == end_pos[0] and dest_piece and dest_piece.color != self.color:
+            return True
+        else:
+            return False
+
+    def _get_direction(self) -> int:
+        """Determines the direction of pawn movement based on its color."""
+        return 1 if self.color == Color.WHITE else -1
