@@ -18,7 +18,7 @@ class Board:
         self.board = self._init_board()
         self.current_player_index = 0
 
-    def _init_board(self):
+    def _init_board(self) -> List[List[Piece]]:
         board = []
         for row in range(8):
             board_row = []
@@ -53,21 +53,6 @@ class Board:
                 board_row.append(piece)
             board.append(board_row)
         return board
-
-    def apply_move(self, move: Move):
-        start_pos = move.start_position
-        end_pos = move.end_position
-        piece = self.board[start_pos[0]][start_pos[1]]
-        if piece is None:
-            raise ValueError("No piece at start position")
-
-        if not piece.is_valid_move(move, self.board):
-            raise ValueError("Invalid move")
-
-        self.board[start_pos[0]][start_pos[1]] = None
-        self.board[end_pos[0]][end_pos[1]] = piece
-
-        return self.board
 
     def is_game_over(self):
         return False

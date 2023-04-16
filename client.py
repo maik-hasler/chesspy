@@ -12,22 +12,16 @@ class Client:
     """Represents a server."""
 
     def __init__(self) -> None:
-        """Initializes a new Client object."""
+        """Initializes a new client object."""
         pygame.init()
         self.screen = pygame.display.set_mode((640, 640))
-        self.board_surface = pygame.Surface((640, 640))
-        self.game = Game(self.screen, self.board_surface)
+        self.game = Game(self.screen)
         self.board = None
         self.socket = None
         self.player_index = None
 
     def connect(self, host: str, port: int) -> None:
-        """Connect to a server.
-
-        Args:
-            host (str): The host of the associate server.
-            port (int): The port of the associate server.
-        """
+        """Connects to a server."""
         self.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.socket.connect((host, port))
         self.socket.setblocking(False)
@@ -41,9 +35,7 @@ class Client:
                 if event.type == pygame.QUIT:
                     pygame.quit()
                     return
-                
                 elif event.type == pygame.MOUSEBUTTONDOWN:
-                    # Check if its the players turn
                     current_player_index = self.board.current_player_index
                     if current_player_index == self.player_index:
                         self.selected_square = Game.get_selected_square()
@@ -52,21 +44,16 @@ class Client:
                             continue
                         self.valid_moves = self.board.get_valid_moves(self.selected_square, piece)
                         self.game.highlight_valid_moves(self.valid_moves)
-
                 elif event.type == pygame.MOUSEBUTTONUP:
-                    # Check if its the players turn
                     current_player_index = self.board.current_player_index
                     if current_player_index == self.player_index:
                         end_square = Game.get_selected_square()
                         if self.selected_square is not None and end_square != self.selected_square:
                             move = Move(self.selected_square, end_square)
                             if move in self.valid_moves:
-                                self.board = self.board.apply_move(move)
-                                self.send_data(self.board)
-                        self.game.update_board(self.board)
+                                self.send_move(move)
                         self.game.reset_highlights()
                         self.selected_square = None
-
             data = self.receive_data()
             if data is None:
                 continue
@@ -75,6 +62,7 @@ class Client:
             pygame.display.update()
 
     def receive_data(self):
+        """Receives data from the connected server."""
         sockets, _, _ = select([self.socket], [], [], 0)
         for server in sockets:
             data = server.recv(1024)
@@ -82,12 +70,13 @@ class Client:
                 return None
             return data
         
-    def send_data(self, data):
-        serialized_data = pickle.dumps(data)
-        self.socket.send(serialized_data)
+    def send_move(self, move: Move):
+        """Sends a move to the connected server."""
+        move_bytes = pickle.dumps(move)
+        self.socket.send(move_bytes)
 
     def disconnect(self):
-        """Disconnect from a server."""
+        """Disconnects from a server."""
         self.socket.close()
 
 if __name__ == '__main__':
