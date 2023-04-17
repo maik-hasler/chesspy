@@ -3,6 +3,7 @@ import socket
 
 from chesspy.board import Board
 from chesspy.move import Move
+from chesspy.database import Database
 
 
 class Server():
@@ -15,6 +16,7 @@ class Server():
         self.socket.listen(2)
         self.clients = []
         self.board = Board()
+        self.database = Database()
 
     def accept_clients(self):
         """Accepts client connections."""
@@ -32,6 +34,7 @@ class Server():
 
     def start_game(self):
         """Starts the chess game."""
+        game_id = self.database.insert_new_game()
         self.broadcast_board()
         while not self.board.game_over:
             current_player = self.clients[self.board.current_player_index]
@@ -44,6 +47,7 @@ class Server():
     def handle_client(self, client):
         """Handles a client move."""
         move = Server.receive_move(client)
+        self.database.insert_new_move(move)
         self.board.board = self.board.apply_move(move)
 
     @staticmethod
