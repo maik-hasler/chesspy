@@ -7,20 +7,11 @@ class Rook(Piece):
     """Represents a rook piece."""
 
     def __init__(self, color: Color) -> None:
-        """Initializes a new Rook object.
-        Args:
-            color (Color): The color of the Rook.
-        """
+        """Initializes a new Rook object."""
         self.color = color
 
     def is_valid_move(self, move: Move, board) -> bool:
-        """Determines whether a given move is valid for a rook on the chess board.
-        Args:
-            move (Move): The move to be checked.
-            board (Board): The current state of the chess board.
-        Returns:
-            bool: True if the move is valid, False otherwise.
-        """
+        """Determines whether a given move is valid for a rook on the chess board."""
         if Move.is_same_square(move.start_position, move.end_position):
             return False
 

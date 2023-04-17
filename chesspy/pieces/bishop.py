@@ -7,22 +7,11 @@ class Bishop(Piece):
     """Represents a bishop piece."""
 
     def __init__(self, color: Color) -> None:
-        """Initializes a new Bishop object.
-        Args:
-            color (Color): The color of the Bishop.
-        """
+        """Initializes a new Bishop object."""
         self.color = color
 
     def is_valid_move(self, move: Move, board) -> bool:
-        """Determines whether a given move is valid for a bishop on the chess board.
-
-        Args:
-            move (Move): The move to be checked.
-            board (Board): The current state of the chess board.
-
-        Returns:
-            bool: True if the move is valid, False otherwise.
-        """
+        """Determines whether a given move is valid for a bishop on the chess board."""
         if not Move.is_diagonal_move(move.start_position, move.end_position):
             return False
 

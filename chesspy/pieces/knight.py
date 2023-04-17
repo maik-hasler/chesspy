@@ -7,20 +7,11 @@ class Knight(Piece):
     """Represents a knight piece."""
 
     def __init__(self, color: Color) -> None:
-        """Initializes a new Knight object.
-        Args:
-            color (Color): The color of the Knight.
-        """
+        """Initializes a new Knight object."""
         self.color = color
 
     def is_valid_move(self, move: Move, board) -> bool:
-        """Determines whether a given move is valid for a knight on the chess board.
-        Args:
-            move (Move): The move to be checked.
-            board (Board): The current state of the chess board.
-        Returns:
-            bool: True if the move is valid, False otherwise.
-        """
+        """Determines whether a given move is valid for a knight on the chess board."""
         # Check if the move is within the knight's range of movement
         start_row, start_col = move.start_position
         end_row, end_col = move.end_position
