@@ -1,21 +1,38 @@
 # chesspy
+Chesspy is part of a school project and involves the development of a chess game where two clients are synchronized through a server using sockets.
 
-# Inhaltsverzeichnis
+# Table of contents
+- [Introduction](#chesspy)
+- [Table of contents](#table-of-contents)
 - [Installation](#installation)
-- [Verwendung](#verwendung)
+    - [Prerequisites](#prerequisites)
+- [Usage](#usage)
 
 # Installation
-Installieren Sie die benötigten Abhängigkeiten.
+To install and run this chess game project, you will need to follow the steps outlined below.
+
+## Prerequisites
+- Python 3.5 or higher installed on your computer
+
+## Installation Steps
+1. Clone the repository:
+```
+https://github.com/maik-hasler/chesspy
+```
+2. Install the required dependencies:
 ```
 pip install -r requirements.txt
 ```
 
-# Verwendung
-Zuerst muss eine Server-Instanz gestartet werden. Der Server ist dafür zuständig, dass Schachbrett mit den verbundenen Clients zu synchronisieren.
+# Usage
+To use this chess game project, you will need to follow the steps outlined below.
+
+1. First, you need to start a server instance. The server is responsible for synchronizing the chessboard with the connected clients. You can start the server using the following command:
 ```
 python server.py
 ```
-Nachdem der Server gestartet ist, müssen **zwei** Client-Instanzen gestartet werden, die sich dann mit den Server verbinden.
+2. Once the server is up and running, you need to start two client instances that will connect to the server. You can start the clients using the following command:
 ```
 python client.py
 ```
+After starting the clients, they will connect to the server and wait for the other client to join. Once both clients have joined, the game will start, and they can begin playing.
