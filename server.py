@@ -17,6 +17,7 @@ class Server():
         self.board = Board()
 
     def accept_clients(self):
+        """Accepts client connections."""
         while len(self.clients) < 2:
             client, _ = self.socket.accept()
             player_index_bytes = pickle.dumps(len(self.clients))
@@ -24,11 +25,13 @@ class Server():
             self.clients.append(client)
 
     def broadcast_board(self):
+        """Broadcasts a board."""
         board_bytes = pickle.dumps(self.board)
         for client in self.clients:
             client.sendall(board_bytes)
 
     def start_game(self):
+        """Starts the chess game."""
         self.broadcast_board()
         while not self.board.game_over:
             current_player = self.clients[self.board.current_player_index]
@@ -39,6 +42,7 @@ class Server():
             self.broadcast_board()
 
     def handle_client(self, client):
+        """Handles a client move."""
         move = Server.receive_move(client)
         self.board.board = self.board.apply_move(move)
 
@@ -49,7 +53,7 @@ class Server():
         while move is None:
             move_bytes = client.recv(1024)
             if not move_bytes:
-                raise ConnectionError("Connection to client lost.")
+                raise ConnectionError('Connection to client lost.')
             move = pickle.loads(move_bytes)
         return move
 

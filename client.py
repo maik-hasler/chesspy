@@ -31,6 +31,7 @@ class Client:
                 self.player_index = pickle.loads(player_index_bytes)
 
     def start_game(self):
+        """Starts the chess game."""
         while True:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:

@@ -1,16 +1,7 @@
 from chesspy.move import Move
 from chesspy.pieces.color import Color
 from chesspy.pieces.piece import Piece
-from chesspy.utils import is_player_in_check_after_move
 
-
-class Pawn(Piece):
-    """Represents a pawn piece."""
-
-    def __init__(self, color: Color) -> None:
-        """Initializes a new pawn object."""
-        self.color = color
-        self.has_moved = False
 
 class Pawn(Piece):
     """Represents a pawn piece."""

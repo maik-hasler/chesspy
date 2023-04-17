@@ -29,6 +29,7 @@ class Game:
         self.update_display()
 
     def highlight_valid_moves(self, valid_moves: List[Move]) -> None:
+        """Highlights valid moves on the chess board."""
         if self.board_copy is not None:
             self.board_surface.blit(self.board_copy, (0, 0))
         self.board_copy = self.board_surface.copy()
@@ -39,16 +40,19 @@ class Game:
         self.update_display()
 
     def reset_highlights(self):
+        """Resets the highlighted squares on the chess board."""
         if self.board_copy is not None:
             self.board_surface.blit(self.board_copy, (0, 0))
             self.board_copy = None
 
     def update_display(self):
+        """Updates the pygame display."""
         self.screen.blit(self.board_surface, (0, 0))
         pygame.display.update()
 
     @staticmethod
     def create_empty_board_surface():
+        """Creates an empty board surface."""
         light_brown = (245, 222, 179)
         dark_brown = (139, 69, 19)
         board_surface = pygame.Surface((640, 640))
@@ -63,6 +67,7 @@ class Game:
 
     @staticmethod
     def get_selected_square() -> Tuple[int, int]:
+        """Gets the indices of the selected square."""
         mouse_x, mouse_y = pygame.mouse.get_pos()
         row = mouse_y // 80
         column = mouse_x // 80
