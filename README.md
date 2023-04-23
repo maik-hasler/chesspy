@@ -20,6 +20,7 @@ To install and run this chess game project, you will need to follow the steps ou
 
 ## Prerequisites
 - Python 3.5 or higher installed on your computer
+- Requirements listed in the `requirements.txt`
 
 ## Installation steps
 1. Clone the repository:
